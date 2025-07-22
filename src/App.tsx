@@ -281,7 +281,7 @@ function App() {
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
             }`}
             style={{ 
-              minHeight: '297mm', 
+              minHeight: '594mm', 
               width: '210mm',
               maxWidth: '210mm'
             }}
@@ -289,8 +289,8 @@ function App() {
             {/* Header Premium */}
             <CVHeader data={cvData.personalInfo} />
 
-            {/* Contenu principal */}
-            <div className="p-8 print:p-6">
+            {/* PAGE 1 - Contenu principal */}
+            <div className="p-8 print:p-6" style={{ minHeight: 'calc(297mm - 200px)' }}>
               {/* Objectif - Pleine largeur avec design premium */}
               <CVSection 
                 title="Objectif Professionnel" 
@@ -311,25 +311,54 @@ function App() {
                 </div>
               </CVSection>
 
+              {/* Expériences professionnelles - PAGE 1 */}
+              <CVSection 
+                title="Parcours Professionnel" 
+                icon={<Briefcase className="w-5 h-5 text-purple-600" />}
+                gradient="from-purple-500 to-pink-500"
+              >
+                <div className="space-y-6">
+                  {cvData.experiences.slice(0, 2).map((exp, index) => (
+                    <TimelineItem
+                      key={index}
+                      title={exp.title}
+                      company={exp.company}
+                      location={exp.location}
+                      period={exp.period}
+                      responsibilities={exp.responsibilities}
+                      achievements={exp.achievements}
+                      isLast={false}
+                    />
+                  ))}
+                </div>
+              </CVSection>
+            </div>
+
+            {/* SAUT DE PAGE */}
+            <div className="page-break-before print:page-break-before"></div>
+
+            {/* PAGE 2 - Suite du contenu */}
+            <div className="p-8 print:p-6" style={{ minHeight: 'calc(297mm - 100px)' }}>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Colonne principale - Expériences */}
+                {/* Colonne principale - Suite des expériences */}
                 <div className="lg:col-span-2 space-y-8">
+                  {/* Suite des expériences */}
                   <CVSection 
-                    title="Parcours Professionnel" 
+                    title="Parcours Professionnel (suite)" 
                     icon={<Briefcase className="w-5 h-5 text-purple-600" />}
                     gradient="from-purple-500 to-pink-500"
                   >
                     <div className="space-y-6">
-                      {cvData.experiences.map((exp, index) => (
+                      {cvData.experiences.slice(2).map((exp, index) => (
                         <TimelineItem
-                          key={index}
+                          key={index + 2}
                           title={exp.title}
                           company={exp.company}
                           location={exp.location}
                           period={exp.period}
                           responsibilities={exp.responsibilities}
                           achievements={exp.achievements}
-                          isLast={index === cvData.experiences.length - 1}
+                          isLast={index === cvData.experiences.slice(2).length - 1}
                         />
                       ))}
                     </div>
