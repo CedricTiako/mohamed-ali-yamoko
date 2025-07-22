@@ -28,7 +28,7 @@ function App() {
     setIsVisible(true);
   }, []);
 
-  const downloadPDF = async () => {
+  async function downloadPDF() {
     setIsGeneratingPDF(true);
     const element = document.getElementById('cv-content');
     
@@ -225,7 +225,7 @@ function App() {
       element.classList.remove('pdf-rendering');
       setIsGeneratingPDF(false);
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
