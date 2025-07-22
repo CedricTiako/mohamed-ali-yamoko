@@ -34,7 +34,199 @@ function App() {
     
     if (!element) return;
 
-    // Configuration PDF ultra-optimisée
+    try {
+      // Préparer l'élément pour un rendu optimal
+      element.classList.add('pdf-rendering');
+      
+      // Attendre que tous les styles soient appliqués
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Forcer le recalcul des styles
+      element.offsetHeight;
+      
+      // Capturer les dimensions exactes de l'élément
+      const rect = element.getBoundingClientRect();
+      const computedStyle = window.getComputedStyle(element);
+      
+      // Configuration PDF ultra-optimisée pour rendu pixel-perfect
+      const opt = {
+        margin: 0, // Pas de marge pour un contrôle total
+        filename: `${cvData.personalInfo.name.replace(/\s+/g, '_')}_CV_Premium.pdf`,
+        image: { 
+          type: 'jpeg', 
+          quality: 1.0,
+          crossOrigin: 'anonymous'
+        },
+        html2canvas: { 
+          scale: 2, // Échelle optimale pour la qualité
+          useCORS: true, 
+          allowTaint: false,
+          backgroundColor: '#ffffff',
+          letterRendering: true,
+          logging: false,
+          width: Math.ceil(rect.width),
+          height: Math.ceil(rect.height),
+          scrollX: 0,
+          scrollY: 0,
+          windowWidth: rect.width,
+          windowHeight: rect.height,
+          dpi: 300,
+          foreignObjectRendering: true,
+          imageTimeout: 30000,
+          removeContainer: false,
+          async: true,
+          proxy: undefined,
+          onclone: (clonedDoc: Document) => {
+            // Optimiser le document cloné
+            const clonedElement = clonedDoc.getElementById('cv-content');
+            if (clonedElement) {
+              // Appliquer les styles critiques directement
+              clonedElement.style.width = `${rect.width}px`;
+              clonedElement.style.minHeight = `${rect.height}px`;
+              clonedElement.style.maxWidth = 'none';
+              clonedElement.style.transform = 'none';
+              clonedElement.style.boxShadow = 'none';
+              clonedElement.style.margin = '0';
+              clonedElement.style.padding = '0';
+              
+              // Optimiser tous les éléments enfants
+              const allElements = clonedElement.querySelectorAll('*');
+              allElements.forEach((el: Element) => {
+                const htmlEl = el as HTMLElement;
+                htmlEl.style.transform = 'none';
+                htmlEl.style.transition = 'none';
+                htmlEl.style.animation = 'none';
+                htmlEl.style.willChange = 'auto';
+                
+                // Préserver les gradients et couleurs
+                if (htmlEl.style.background && htmlEl.style.background.includes('gradient')) {
+                  htmlEl.style.webkitPrintColorAdjust = 'exact';
+                  htmlEl.style.colorAdjust = 'exact';
+                }
+              });
+              
+              // Ajouter les styles CSS critiques directement dans le document cloné
+              const style = clonedDoc.createElement('style');
+              style.textContent = `
+                * {
+                  -webkit-print-color-adjust: exact !important;
+                  color-adjust: exact !important;
+                  print-color-adjust: exact !important;
+                  box-sizing: border-box !important;
+                }
+                
+                body {
+                  margin: 0 !important;
+                  padding: 0 !important;
+                  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+                  -webkit-font-smoothing: antialiased !important;
+                  -moz-osx-font-smoothing: grayscale !important;
+                }
+                
+                #cv-content {
+                  width: ${rect.width}px !important;
+                  min-height: ${rect.height}px !important;
+                  max-width: none !important;
+                  margin: 0 !important;
+                  padding: 0 !important;
+                  box-shadow: none !important;
+                  transform: none !important;
+                  background: white !important;
+                }
+                
+                .bg-gradient-to-br {
+                  background: linear-gradient(135deg, var(--tw-gradient-stops)) !important;
+                }
+                
+                .bg-gradient-to-r {
+                  background: linear-gradient(90deg, var(--tw-gradient-stops)) !important;
+                }
+                
+                .from-slate-900 { --tw-gradient-from: #0f172a !important; }
+                .via-blue-900 { --tw-gradient-via: #1e3a8a !important; }
+                .to-slate-800 { --tw-gradient-to: #1e293b !important; }
+                
+                .text-white { color: #ffffff !important; }
+                .text-blue-100 { color: #dbeafe !important; }
+                .text-blue-200 { color: #bfdbfe !important; }
+                
+                .shadow-2xl, .shadow-xl, .shadow-lg, .shadow-md, .shadow-sm {
+                  box-shadow: none !important;
+                }
+              `;
+              clonedDoc.head.appendChild(style);
+            }
+          }
+        },
+        jsPDF: { 
+          unit: 'px',
+          format: [rect.width, rect.height],
+          orientation: rect.width > rect.height ? 'landscape' : 'portrait',
+          compress: false, // Pas de compression pour préserver la qualité
+          precision: 32,
+          putOnlyUsedFonts: true,
+          floatPrecision: 16,
+          hotfixes: ['px_scaling']
+        },
+        pagebreak: { 
+          mode: ['avoid-all'],
+          avoid: ['*']
+        }
+      };
+
+      // Générer le PDF avec la configuration optimisée
+      const pdf = await html2pdf()
+        .set(opt)
+        .from(element)
+        .toPdf()
+        .get('pdf');
+      
+      // Métadonnées PDF professionnelles
+      pdf.setProperties({
+        title: `CV Premium - ${cvData.personalInfo.name}`,
+        subject: 'Curriculum Vitae Professionnel',
+        author: cvData.personalInfo.name,
+        creator: 'CV Generator Premium',
+        producer: 'html2pdf.js Enhanced',
+        keywords: 'CV, Resume, Assembleur, Meubles, Professionnel'
+      });
+      
+      // Sauvegarder le PDF
+      await pdf.save();
+      
+    } catch (error) {
+      console.error('Erreur génération PDF:', error);
+      
+      // Fallback avec une configuration simplifiée
+      const fallbackOpt = {
+        margin: [0.2, 0.2, 0.2, 0.2],
+        filename: `${cvData.personalInfo.name.replace(/\s+/g, '_')}_CV_Premium.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+          scale: 1.5,
+          useCORS: true,
+          backgroundColor: '#ffffff',
+          logging: false
+        },
+        jsPDF: { 
+          unit: 'mm', 
+          format: 'a4', 
+          orientation: 'portrait'
+        }
+      };
+      
+      try {
+        await html2pdf().set(fallbackOpt).from(element).save();
+      } catch (fallbackError) {
+        console.error('Erreur fallback PDF:', fallbackError);
+        alert('Erreur lors de la génération du PDF. Veuillez réessayer.');
+      }
+    } finally {
+      element.classList.remove('pdf-rendering');
+      setIsGeneratingPDF(false);
+    }
+  };
+
     const opt = {
       margin: [0.3, 0.3, 0.3, 0.3],
       filename: `${cvData.personalInfo.name.replace(/\s+/g, '_')}_CV_Premium.pdf`,

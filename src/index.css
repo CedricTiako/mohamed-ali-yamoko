@@ -280,15 +280,88 @@ p, li, span {
 
 /* Optimisations PDF rendering */
 .pdf-rendering {
-  transform: scale(1) !important;
+  transform: none !important;
   transition: none !important;
   animation: none !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  max-width: none !important;
+  width: 210mm !important;
+  background: white !important;
+  position: relative !important;
+  z-index: 1 !important;
 }
 
 .pdf-rendering * {
   transition: none !important;
   animation: none !important;
   transform: none !important;
+  will-change: auto !important;
+  backface-visibility: visible !important;
+  -webkit-backface-visibility: visible !important;
+}
+
+/* Optimisations spécifiques pour le rendu PDF */
+.pdf-rendering .bg-gradient-to-br,
+.pdf-rendering .bg-gradient-to-r,
+.pdf-rendering .bg-gradient-to-b {
+  -webkit-print-color-adjust: exact !important;
+  color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.pdf-rendering .shadow-2xl,
+.pdf-rendering .shadow-xl,
+.pdf-rendering .shadow-lg,
+.pdf-rendering .shadow-md,
+.pdf-rendering .shadow-sm {
+  box-shadow: none !important;
+}
+
+.pdf-rendering .backdrop-blur-sm,
+.pdf-rendering .backdrop-blur-md {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Préservation des couleurs pour PDF */
+.pdf-rendering .text-white {
+  color: #ffffff !important;
+}
+
+.pdf-rendering .text-blue-100 {
+  color: #dbeafe !important;
+}
+
+.pdf-rendering .text-blue-200 {
+  color: #bfdbfe !important;
+}
+
+.pdf-rendering .bg-white {
+  background-color: #ffffff !important;
+}
+
+/* Optimisation des gradients pour PDF */
+.pdf-rendering .from-slate-900 {
+  --tw-gradient-from: #0f172a !important;
+  --tw-gradient-to: rgb(15 23 42 / 0) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.pdf-rendering .via-blue-900 {
+  --tw-gradient-to: rgb(30 58 138 / 0) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), #1e3a8a, var(--tw-gradient-to) !important;
+}
+
+.pdf-rendering .to-slate-800 {
+  --tw-gradient-to: #1e293b !important;
+}
+
+/* Forcer l'affichage des couleurs de fond */
+.pdf-rendering [class*="bg-"] {
+  -webkit-print-color-adjust: exact !important;
+  color-adjust: exact !important;
+  print-color-adjust: exact !important;
 }
 
 /* Optimisations haute résolution */
