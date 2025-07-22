@@ -320,6 +320,7 @@ function App() {
                 <div className="space-y-6">
                   {cvData.experiences.slice(0, 2).map((exp, index) => (
                     <TimelineItem
+                      className="timeline-item experience-card avoid-page-break"
                       key={index}
                       title={exp.title}
                       company={exp.company}
@@ -351,6 +352,7 @@ function App() {
                     <div className="space-y-6">
                       {cvData.experiences.slice(2).map((exp, index) => (
                         <TimelineItem
+                          className="timeline-item experience-card avoid-page-break"
                           key={index + 2}
                           title={exp.title}
                           company={exp.company}
@@ -399,6 +401,7 @@ function App() {
                     <div className="bg-gray-50 p-4 rounded-xl">
                       {cvData.skills.map((skill, index) => (
                         <SkillBar
+                          className="avoid-page-break"
                           key={index}
                           name={skill.name}
                           level={skill.level}

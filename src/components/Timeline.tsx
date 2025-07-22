@@ -9,6 +9,7 @@ interface TimelineItemProps {
   responsibilities: string[];
   achievements?: string[];
   isLast?: boolean;
+  className?: string;
 }
 
 export const TimelineItem: React.FC<TimelineItemProps> = ({
@@ -19,16 +20,17 @@ export const TimelineItem: React.FC<TimelineItemProps> = ({
   responsibilities,
   achievements,
   isLast = false
+  className = ''
 }) => {
   return (
-    <div className="relative pl-8 pb-8">
+    <div className={`relative pl-8 pb-8 ${className}`}>
       {/* Timeline line */}
       {!isLast && (
-        <div className="absolute left-4 top-8 w-0.5 h-full bg-gradient-to-b from-blue-500 to-blue-300" />
+        <div className="timeline-line absolute left-4 top-8 w-0.5 h-full bg-gradient-to-b from-blue-500 to-blue-300" />
       )}
       
       {/* Timeline dot */}
-      <div className="absolute left-2 top-2 w-4 h-4 bg-blue-500 rounded-full border-4 border-white shadow-lg" />
+      <div className="timeline-dot absolute left-2 top-2 w-4 h-4 bg-blue-500 rounded-full border-4 border-white shadow-lg" />
       
       {/* Content */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 p-5">

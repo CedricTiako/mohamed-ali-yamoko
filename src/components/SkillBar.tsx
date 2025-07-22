@@ -5,9 +5,10 @@ interface SkillBarProps {
   name: string;
   level: number;
   category: 'technical' | 'soft' | 'language';
+  className?: string;
 }
 
-export const SkillBar: React.FC<SkillBarProps> = ({ name, level, category }) => {
+export const SkillBar: React.FC<SkillBarProps> = ({ name, level, category, className = '' }) => {
   const getColor = () => {
     switch (category) {
       case 'technical': return 'bg-blue-500';
@@ -27,7 +28,7 @@ export const SkillBar: React.FC<SkillBarProps> = ({ name, level, category }) => 
   };
 
   return (
-    <div className="mb-4 p-3 bg-white rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+    <div className={`mb-4 p-3 bg-white rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-shadow ${className}`}>
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <span className="text-lg">{getCategoryIcon()}</span>
@@ -37,7 +38,9 @@ export const SkillBar: React.FC<SkillBarProps> = ({ name, level, category }) => 
           {level}%
         </span>
       </div>
-      <ProgressBar percentage={level} color={getColor()} />
+      <div className="progress-bar-container">
+        <ProgressBar percentage={level} color={getColor()} />
+      </div>
     </div>
   );
 };
